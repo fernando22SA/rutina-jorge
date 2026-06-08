@@ -3,1204 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rutina Smart Fit Interactiva</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Aesthetic">
+    <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Pink_heart.svg/512px-Pink_heart.svg.png">
+
+    <title>Aesthetic Workout Routine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* RESET GENERAL */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-text-size-adjust: 100%;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
+        :root {
+            --bg-main: #fff0f5; 
+            --text-main: #475569; 
+            --accent-pink: #f472b6; 
+        }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #e2e8f0;
-            min-height: 100vh;
-            padding: 15px;
-            -webkit-font-smoothing: antialiased;
-            line-height: 1.5;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            background-image: radial-gradient(#fbcfe8 1px, transparent 1px);
+            background-size: 20px 20px;
+            overscroll-behavior-y: none;
         }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
+        [contenteditable="true"] {
+            transition: all 0.2s ease;
+            border-bottom: 1px dashed transparent;
+            -webkit-tap-highlight-color: transparent;
         }
-        
-        /* HEADER */
-        .header-gradient {
-            background: linear-gradient(90deg, #dc2626 0%, #3b82f6 100%);
-            border-radius: 20px;
-            padding: 20px 15px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        [contenteditable="true"]:hover {
+            border-bottom: 1px dashed var(--accent-pink);
+            cursor: text;
         }
-        
-        h1 {
-            font-size: 28px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        [contenteditable="true"]:focus {
+            outline: none;
+            background-color: #fdf2f8;
+            border-bottom: 1px solid var(--accent-pink);
+            border-radius: 4px;
+            padding: 0 4px;
         }
-        
-        .header-badges {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .header-badge {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 600;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        /* DÍAS DE LA SEMANA */
-        .days-grid {
-            display: flex;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            padding-bottom: 10px;
-            margin-bottom: 25px;
-            gap: 8px;
-        }
-        
-        .days-grid::-webkit-scrollbar {
+        .hide-scroll::-webkit-scrollbar {
             display: none;
         }
-        
-        .day-button {
-            min-width: 90px;
-            padding: 12px 8px;
-            border-radius: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            font-size: 14px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
         }
-        
-        .day-button div:first-child {
-            font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-        
-        .day-button div:last-child {
-            font-size: 12px;
-            opacity: 0.9;
-        }
-        
-        .day-button.active {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-        }
-        
-        /* CONTENIDO DE DÍAS */
-        .day-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-            margin-bottom: 25px;
-        }
-        
-        .day-content.active {
-            max-height: 5000px;
-        }
-        
-        .day-title {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .day-number {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            margin-right: 15px;
-            flex-shrink: 0;
-        }
-        
-        .muscle-group {
-            border-left: 4px solid;
-            padding-left: 12px;
-            font-weight: 700;
-            font-size: 18px;
-        }
-        
-        /* EJERCICIOS */
-        .exercise-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-        
-        @media (min-width: 768px) {
-            .exercise-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        .exercise-card {
-            background: #1e293b;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .exercise-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
-        }
-        
-        .exercise-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-        
-        .exercise-content {
-            padding: 20px;
-        }
-        
-        .exercise-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-        
-        .exercise-name {
-            font-weight: 700;
-            font-size: 18px;
-            flex: 1;
-        }
-        
-        .exercise-machine {
-            background: #dc2626;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-        
-        .exercise-detail {
-            color: #94a3b8;
-            margin-bottom: 12px;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .exercise-detail i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
-        
-        .tips-box {
-            background: rgba(13, 148, 136, 0.15);
-            border-left: 3px solid #0d9488;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-        }
-        
-        .tips-box p {
-            font-size: 14px;
-            display: flex;
-            align-items: flex-start;
-        }
-        
-        .tips-box i {
-            color: #f59e0b;
-            margin-right: 10px;
-            margin-top: 4px;
-        }
-        
-        /* DÍAS DE DESCANSO */
-        .rest-content {
-            background: rgba(30, 41, 59, 0.5);
-            padding: 30px 20px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .rest-icon {
-            font-size: 50px;
-            margin-bottom: 20px;
-            display: inline-block;
-        }
-        
-        .rest-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        
-        .rest-subtitle {
-            font-size: 17px;
-            margin-bottom: 25px;
-            opacity: 0.9;
-        }
-        
-        .rest-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        @media (max-width: 480px) {
-            .rest-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .rest-activity {
-            background: rgba(30, 41, 59, 0.7);
-            padding: 15px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 15px;
-        }
-        
-        .rest-activity i {
-            margin-right: 10px;
-            font-size: 18px;
-        }
-        
-        /* NOTAS FINALES */
-        .final-notes {
-            background: rgba(30, 41, 59, 0.5);
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid rgba(51, 65, 85, 0.5);
-            margin-top: 30px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .notes-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #67e8f9;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .notes-list {
-            list-style: none;
-        }
-        
-        .notes-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-        
-        .note-number {
-            background: #06b6d4;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            flex-shrink: 0;
-            font-weight: 700;
-            font-size: 16px;
-        }
-        
-        .note-content {
-            font-size: 16px;
-        }
-        
-        .note-content strong {
-            color: #e2e8f0;
-        }
-        
-        .note-content ul {
-            list-style-type: disc;
-            padding-left: 25px;
-            margin-top: 10px;
-        }
-        
-        .note-content li {
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-        
-        /* FOOTER */
-        .footer {
-            text-align: center;
-            padding: 30px 0 20px;
-            color: #94a3b8;
-            font-size: 15px;
-        }
-        
-        .footer p:not(:last-child) {
-            margin-bottom: 10px;
-        }
-        
-        /* COLORES ESPECÍFICOS */
-        .lunes { background: rgba(220, 38, 38, 0.3); }
-        .martes { background: rgba(16, 185, 129, 0.3); }
-        .miercoles { background: rgba(59, 130, 246, 0.3); }
-        .jueves { background: rgba(100, 116, 139, 0.3); opacity: 0.7; }
-        .viernes { background: rgba(139, 92, 246, 0.3); }
-        .sabado { background: rgba(245, 158, 11, 0.3); }
-        .domingo { background: rgba(100, 116, 139, 0.3); opacity: 0.7; }
-        
-        .chest { border-color: #dc2626; }
-        .legs { border-color: #10b981; }
-        .back { border-color: #3b82f6; }
-        .shoulders { border-color: #8b5cf6; }
-        .core { border-color: #f59e0b; }
-        .glutes { border-color: #d946ef; }
-        
-        .lunes .day-number { background: #dc2626; }
-        .martes .day-number { background: #10b981; }
-        .miercoles .day-number { background: #3b82f6; }
-        .viernes .day-number { background: #8b5cf6; }
-        .sabado .day-number { background: #f59e0b; }
-        
-        .lunes .exercise-machine { background: #dc2626; }
-        .martes .exercise-machine { background: #10b981; }
-        .miercoles .exercise-machine { background: #3b82f6; }
-        .viernes .exercise-machine { background: #8b5cf6; }
-        .sabado .exercise-machine { background: #f59e0b; }
-        
-        /* COMPATIBILIDAD iOS */
-        @supports (-webkit-touch-callout: none) {
-            .exercise-card {
-                -webkit-transform: translateZ(0);
-            }
-            
-            .day-button {
-                -webkit-backface-visibility: hidden;
-            }
+        .aesthetic-shadow {
+            box-shadow: 0 10px 25px -5px rgba(244, 114, 182, 0.15), 0 8px 10px -6px rgba(244, 114, 182, 0.1);
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- Encabezado -->
-        <div class="header-gradient">
-            <h1>🔥 RUTINA INTERACTIVA</h1>
-            <div class="header-badges">
-                <div class="header-badge pulse">CLIC EN CADA DÍA</div>
-                <div class="header-badge">HIPERTROFIA + DEFINICIÓN</div>
-                <div class="header-badge">6-8 SEMANAS</div>
-            </div>
-        </div>
+<body class="min-h-screen p-4 md:p-8">
 
-        <!-- Botones de días -->
-        <div class="days-grid">
-            <div class="day-button lunes" data-day="lunes">
-                <div>LUN</div>
-                <div>Pecho/Tri/Core</div>
-            </div>
+    <div class="max-w-4xl mx-auto">
+        <header class="mb-8 text-center md:text-left bg-white p-6 rounded-3xl aesthetic-shadow border border-pink-50 mt-2">
+            <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400 mb-2">My Aesthetic Routine ✨</h1>
+            <p class="text-slate-500 text-sm md:text-base font-light">Lower-body focused split. Toca cualquier texto para editarlo.</p>
+        </header>
 
-            <div class="day-button martes" data-day="martes">
-                <div>MAR</div>
-                <div>Pierna/Glúteos</div>
-            </div>
+        <nav class="flex space-x-3 mb-8 overflow-x-auto hide-scroll pb-4 px-1" id="day-tabs"></nav>
 
-            <div class="day-button miercoles" data-day="miercoles">
-                <div>MIÉ</div>
-                <div>Espalda/Bi/Core</div>
-            </div>
+        <main id="routine-container" class="space-y-5"></main>
 
-            <div class="day-button jueves" data-day="jueves">
-                <div>JUE</div>
-                <div>Descanso</div>
-            </div>
-
-            <div class="day-button viernes" data-day="viernes">
-                <div>VIE</div>
-                <div>Hombros/Glúteos</div>
-            </div>
-
-            <div class="day-button sabado" data-day="sabado">
-                <div>SÁB</div>
-                <div>Pierna/Core</div>
-            </div>
-
-            <div class="day-button domingo" data-day="domingo">
-                <div>DOM</div>
-                <div>Descanso</div>
-            </div>
-        </div>
-
-        <!-- Contenido de días -->
-        <!-- Lunes -->
-        <div id="lunes-content" class="day-content">
-            <div class="day-title">
-                <div class="day-number">1</div>
-                <div class="muscle-group chest">LUNES: PECHO + TRÍCEPS + CORE</div>
-            </div>
-
-            <div class="exercise-grid">
-                <!-- Ejercicio 1 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/yc1FT2Pw/incline-bench-press-800.jpg" alt="Press Inclinado" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Press Inclinado con Barra</h4>
-                            <span class="exercise-machine">Matrix Smith</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>4 series x 8-10 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 90-120 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Mantén escápulas retraídas y arquea levemente la espalda. Controla la bajada durante 3 segundos.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 2 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/XG8kkRf/Chest2.jpg" alt="Press Plano en Máquina" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Press Plano en Máquina</h4>
-                            <span class="exercise-machine">Matrix Chest Press</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 10-12 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 60-90 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Enfócate en la contracción máxima en la parte superior del movimiento. Evita bloquear los codos completamente.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 3 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/LdYj01hJ/cruces-polea-alta.webp" alt="Aperturas" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Aperturas en Polea Alta</h4>
-                            <span class="exercise-machine">Matrix Cable Crossover</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 12-15 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 60 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Cruza ligeramente las manos al final del movimiento para mayor contracción pectoral. Mantén los codos ligeramente flexionados.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 4 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/xqMnhzjW/tricp-pushmatrxi.png" alt="Fondos" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Fondos en Máquina</h4>
-                            <span class="exercise-machine">Matrix Dip Machine</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 10-12 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 60-75 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Inclínate ligeramente hacia adelante para enfocar el pecho. Baja hasta que los codos formen 90 grados.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 5 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/Pvkkxvpz/russian.webp" alt="Russian Twists con Peso" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Russian Twists con Peso</h4>
-                            <span class="exercise-machine">Matrix Cable + Polea</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 15/lado
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 45 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Giro completo de torso. Mantén los pies elevados para mayor intensidad.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 6 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/C5NmjQYy/PLANCHA.webp" alt="Plancha" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Plancha</h4>
-                            <span class="exercise-machine">---</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 30''
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 30 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Cadera alta, sin colapsar. Mantén una línea recta desde hombros hasta tobillos.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Martes -->
-        <div id="martes-content" class="day-content">
-            <div class="day-title">
-                <div class="day-number">2</div>
-                <div class="muscle-group legs">MARTES: PIERNA (CUÁDRICEPS) + GLÚTEOS</div>
-            </div>
-
-            <div class="exercise-grid">
-                <!-- Ejercicio 1 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/GQ6ZrhKf/optimized-media-1287833-54512.png" alt="Sentadilla Hacka" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Sentadilla en Hacka</h4>
-                            <span class="exercise-machine">Matrix Hack Squat</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>4 series x 8-10 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 120 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Pies separados al ancho de hombros. Empuja con los talones manteniendo la espalda contra el respaldo.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 2 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/C53mM63W/prensa.jpg" alt="Prensa" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Prensa Inclinada</h4>
-                            <span class="exercise-machine">Matrix Leg Press</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 10-12 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 90 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Coloca los pies en la parte alta de la plataforma para enfocar glúteos. No bloquees las rodillas al extender.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 3 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/5XDfbnRD/EXTENSION-QUAD.webp" alt="Extensión Cuádriceps" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Extensión de Cuádriceps</h4>
-                            <span class="exercise-machine">Matrix Leg Extension</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 12-15 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 60 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Mantén 1 segundo de pico de contracción en la parte superior. Haz repeticiones parciales al final para fatiga máxima.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 4 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/QvJYc7bS/HIP.jpg" alt="Hip Thrust" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Hip Thrust en Máquina</h4>
-                            <span class="exercise-machine">Matrix Glute Drive</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>4 series x 12 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 75 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Mantén el mentón pegado al pecho para evitar hiperextensión lumbar. Enfócate en la contracción de glúteos en la parte superior.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Miércoles -->
-        <div id="miercoles-content" class="day-content">
-            <div class="day-title">
-                <div class="day-number">3</div>
-                <div class="muscle-group back">MIÉRCOLES: ESPALDA + BÍCEPS + CORE</div>
-            </div>
-
-            <div class="exercise-grid">
-                <!-- Ejercicio 1 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/gFZv5HFW/LATPULL.webp" alt="Jalón al pecho" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Jalón al Pecho Prono</h4>
-                            <span class="exercise-machine">Matrix Lat Pulldown</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>4 series x 8-10 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 90 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Imagina que "doblas la barra" para activar dorsales. Mantén el torso erguido y evita balancearte.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 2 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/HLtT1ZWV/ROW.jpg" alt="Remo con apoyo" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Remo con Apoyo de Pecho</h4>
-                            <span class="exercise-machine">Matrix Chest Supported Row</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 10-12 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 75 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Retrae escápulas al jalar. Mantén una ligera flexión en las rodillas para proteger la zona lumbar.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 3 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/v4YGnRVx/FACEPULL.jpg" alt="Face Pull" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Face Pull en Polea</h4>
-                            <span class="exercise-machine">Matrix Cable</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 12-15 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 60 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Enfócate en rotación externa de hombros. Separa la cuerda hacia los lados al final del movimiento.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 4 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/cXtQ1vQZ/CUR.jpg" alt="Curl de bíceps" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Curl de Bíceps en Máquina</h4>
-                            <span class="exercise-machine">Matrix Bicep Curl</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 12 + dropset
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 60 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Controla la bajada durante 3 segundos. Mantén los codos pegados al cuerpo.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 5 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/svsnQckv/RUEDA.webp" alt="Rueda Abdominal" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Rueda Abdominal</h4>
-                            <span class="exercise-machine">Ab Wheel</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 12 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 60 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Contraer glúteos al rodar. Mantén el core activo y evita arquear la espalda baja.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Viernes -->
-        <div id="viernes-content" class="day-content">
-            <div class="day-title">
-                <div class="day-number">4</div>
-                <div class="muscle-group shoulders">VIERNES: HOMBROS + TRAPECIO + GLÚTEOS</div>
-            </div>
-
-            <div class="exercise-grid">
-                <!-- Ejercicio 1 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/G43TCGs5/SHOULDER.jpg" alt="Press militar" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Press Militar Sentado</h4>
-                            <span class="exercise-machine">Matrix Shoulder Press</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>4 series x 8-10 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 90 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> No bloquees codos arriba. Mantén el core activo durante todo el movimiento.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 2 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/hxTvXymk/lateral.jpg" alt="Elevaciones laterales" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Elevaciones Laterales</h4>
-                            <span class="exercise-machine">Matrix Cable</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 12-15 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 60 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Mantén una ligera flexión en los codos. Eleva hasta la altura de los hombros.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 3 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/ZRKWk3J5/reverse.png" alt="Reverse fly" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Reverse Fly en Pec Deck</h4>
-                            <span class="exercise-machine">Matrix Rear Delt Machine</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 12 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 60 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Pecho contra el apoyo. Mantén un movimiento controlado y evita usar impulso.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 4 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/WNBvrmTM/kickback.jpg" alt="Patada de glúteo" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Patada de Glúteo en Polea</h4>
-                            <span class="exercise-machine">Matrix Cable</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 12/pierna
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 45 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Extensión completa de cadera. Mantén el torso estable y evita arquear la espalda.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sábado -->
-        <div id="sabado-content" class="day-content">
-            <div class="day-title">
-                <div class="day-number">5</div>
-                <div class="muscle-group legs">SÁBADO: PIERNA (POSTERIOR) + CORE</div>
-            </div>
-
-            <div class="exercise-grid">
-                <!-- Ejercicio 1 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/XkjNsyV8/rumano.gif" alt="Peso muerto rumano" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Peso Muerto Rumano</h4>
-                            <span class="exercise-machine">Matrix Smith Machine</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>4 series x 8 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 120 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> ¡Cadera atrás, pecho alto! Mantén las rodillas ligeramente flexionadas y la barra cerca del cuerpo.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 2 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/WN6Qm1Pw/curlfem.webp" alt="Curl femoral" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Curl Femoral Acostado</h4>
-                            <span class="exercise-machine">Matrix Leg Curl</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 10-12 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 75 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> +5 repeticiones parciales al final. Mantén las caderas presionadas contra el banco durante todo el movimiento.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 3 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/F2ML4LK/dragon.jpg" alt="Dragon flags" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Dragon Flags</h4>
-                            <span class="exercise-machine">Banco plano</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 8 repeticiones
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 90 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Control excéntrico. Comienza con piernas flexionadas si es muy difícil.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ejercicio 4 -->
-                <div class="exercise-card">
-                    <img src="https://i.ibb.co/6kxTWX7/woodcho.jpg" alt="Woodchoppers" class="exercise-image">
-                    <div class="exercise-content">
-                        <div class="exercise-title">
-                            <h4 class="exercise-name">Cable Woodchoppers</h4>
-                            <span class="exercise-machine">Matrix Cable</span>
-                        </div>
-                        <p class="exercise-detail">
-                            <i class="fas fa-sync-alt"></i>3 series x 12/lado
-                        </p>
-                        <p class="exercise-detail">
-                            <i class="fas fa-clock"></i>Descanso: 45 segundos
-                        </p>
-                        <div class="tips-box">
-                            <p>
-                                <i class="fas fa-lightbulb"></i> Rotación desde el core. Mantén los pies separados a la altura de los hombros y las rodillas ligeramente flexionadas.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Descanso Jueves -->
-        <div id="jueves-content" class="day-content">
-            <div class="rest-content">
-                <i class="fas fa-bed rest-icon" style="color: #60a5fa;"></i>
-                <h3 class="rest-title">DÍA DE DESCANSO ACTIVO</h3>
-                <p class="rest-subtitle">Permite que tu cuerpo se recupere para mejores resultados</p>
-                <p>Realiza alguna actividad ligera como:</p>
-                <div class="rest-grid">
-                    <div class="rest-activity">
-                        <i class="fas fa-walking"></i> Caminata 30-40 min
-                    </div>
-                    <div class="rest-activity">
-                        <i class="fas fa-swimmer"></i> Natación suave
-                    </div>
-                    <div class="rest-activity">
-                        <i class="fas fa-biking"></i> Ciclismo ligero
-                    </div>
-                    <div class="rest-activity">
-                        <i class="fas fa-spa"></i> Estiramientos
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Descanso Domingo -->
-        <div id="domingo-content" class="day-content">
-            <div class="rest-content">
-                <i class="fas fa-couch rest-icon" style="color: #c084fc;"></i>
-                <h3 class="rest-title">DÍA DE DESCANSO TOTAL</h3>
-                <p class="rest-subtitle">La recuperación es parte fundamental del crecimiento muscular</p>
-                <p>Aprovecha para:</p>
-                <div class="rest-grid">
-                    <div class="rest-activity">
-                        <i class="fas fa-cloud-moon"></i> Dormir 8+ horas
-                    </div>
-                    <div class="rest-activity">
-                        <i class="fas fa-utensils"></i> Alimentarte bien
-                    </div>
-                    <div class="rest-activity">
-                        <i class="fas fa-tv"></i> Descansar mentalmente
-                    </div>
-                    <div class="rest-activity">
-                        <i class="fas fa-hands"></i> Recuperarte completamente
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Notas finales -->
-        <div class="final-notes">
-            <h2 class="notes-title">📌 NOTAS FINALES</h2>
-            <ul class="notes-list">
-                <li class="notes-item">
-                    <div class="note-number">1</div>
-                    <div class="note-content">
-                        <strong>PROGRESIÓN:</strong> Aumenta peso o repeticiones cada semana (+5% peso o +2 repeticiones)
-                    </div>
-                </li>
-                <li class="notes-item">
-                    <div class="note-number">2</div>
-                    <div class="note-content">
-                        <strong>DESCANSOS:</strong>
-                        <ul>
-                            <li>Ejercicios compuestos: 1.5 - 2 min</li>
-                            <li>Ejercicios aislamiento: 45 - 60 seg</li>
-                        </ul>
-                    </div>
-                </li>
-                <li class="notes-item">
-                    <div class="note-number">3</div>
-                    <div class="note-content">
-                        <strong>TÉCNICA &gt; PESO:</strong> Evita "rebotes" o usar impulso. Prioriza contracción muscular sobre carga máxima
-                    </div>
-                </li>
-                <li class="notes-item">
-                    <div class="note-number">4</div>
-                    <div class="note-content">
-                        <strong>NUTRICIÓN:</strong> Consume +1.8g proteína/kg de peso al día. Hidratación adecuada (2.5-3L diarios)
-                    </div>
-                </li>
-                <li class="notes-item">
-                    <div class="note-number">5</div>
-                    <div class="note-content">
-                        <strong>VARIACIÓN:</strong> Cambia 1-2 ejercicios cada 3 semanas para evitar estancamiento
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <p>Rutina interactiva diseñada específicamente para Smart Fit con máquinas Matrix • Duración: 6-8 semanas</p>
-            <p>© 2025 - Rutina Hipertrofia & Definición personalizada.</p>
+        <div class="mt-12 text-center pb-8">
+            <button onclick="resetRoutine()" class="text-xs text-pink-300 hover:text-pink-500 transition-colors bg-white px-4 py-2 rounded-full shadow-sm border border-pink-100">
+                🤍 Restaurar rutina original
+            </button>
         </div>
     </div>
 
-    <!-- Font Awesome Icons (base64 embedded) -->
     <script>
-        // Crear elementos para los iconos de Font Awesome
-        const style = document.createElement('style');
-        style.textContent = `
-            /* Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc. */
-            .fas { font-style: normal; font-weight: 900; font-family: 'Font Awesome 6 Free'; display: inline-block; }
-            .fa-sync-alt:before { content: "\\f2f1"; }
-            .fa-clock:before { content: "\\f017"; }
-            .fa-lightbulb:before { content: "\\f0eb"; }
-            .fa-bed:before { content: "\\f236"; }
-            .fa-walking:before { content: "\\f554"; }
-            .fa-swimmer:before { content: "\\f5c4"; }
-            .fa-biking:before { content: "\\f84a"; }
-            .fa-spa:before { content: "\\f5bb"; }
-            .fa-cloud-moon:before { content: "\\f6c3"; }
-            .fa-utensils:before { content: "\\f2e7"; }
-            .fa-tv:before { content: "\\f26c"; }
-            .fa-hands:before { content: "\\f4c2"; }
-            .fa-couch:before { content: "\\f4b8"; }
-        `;
-        document.head.appendChild(style);
-    </script>
-
-    <!-- JavaScript -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Obtener todos los botones de días
-            const dayButtons = document.querySelectorAll(".day-button");
-            
-            // Obtener todos los contenidos de días
-            const dayContents = document.querySelectorAll(".day-content");
-            
-            // Función para mostrar un día específico
-            function showDay(day) {
-                // Ocultar todos los contenidos
-                dayContents.forEach((content) => {
-                    content.classList.remove("active");
-                });
-                
-                // Mostrar el contenido del día seleccionado
-                const dayContent = document.getElementById(`${day}-content`);
-                if (dayContent) {
-                    dayContent.classList.add("active");
-                }
-                
-                // Quitar clase activa de todos los botones
-                dayButtons.forEach((button) => {
-                    button.classList.remove("active");
-                });
-                
-                // Agregar clase activa al botón seleccionado
-                const activeButton = document.querySelector(`.day-button[data-day="${day}"]`);
-                if (activeButton) {
-                    activeButton.classList.add("active");
-                    
-                    // Scroll suave hacia el contenido
-                    setTimeout(() => {
-                        activeButton.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                    }, 300);
-                }
+        const defaultRoutine = [
+            {
+                id: 'day1',
+                title: 'Día 1: Glúteo & Femoral 🍑',
+                exercises: [
+                    { type: 'Base', name: 'Hip Thrust (Barra o Máquina)', sets: '4 x 8-10', rir: 'RIR 1-2', note: 'Empuja con los talones. Sostén 1 seg arriba.' },
+                    { type: 'Base', name: 'Peso Muerto Rumano', sets: '4 x 8-10', rir: 'RIR 1-2', note: 'Lleva la cadera bien atrás, siente el estiramiento.' },
+                    { type: 'Aislamiento', name: 'Curl Femoral (Tumbada o Sentada)', sets: '3 x 10-12', rir: 'RIR 0', note: 'Controla la bajada despacio.' },
+                    { type: 'Metabólico', name: 'Sentadilla Búlgara', sets: '3 x 10-12 c/p', rir: 'RIR 1', note: 'Tronco inclinado hacia adelante para enfoque en glúteo.' },
+                    { type: 'Aislamiento', name: 'Hiperextensiones en banco 45°', sets: '3 x 12-15', rir: 'RIR 0', note: 'Espalda encorvada, aprieta el glúteo al subir.' }
+                ]
+            },
+            {
+                id: 'day2',
+                title: 'Día 2: Espalda & Bíceps 🦋',
+                exercises: [
+                    { type: 'Base', name: 'Jalón al Pecho', sets: '4 x 8-10', rir: 'RIR 1-2', note: 'Saca pecho al jalar, lleva la barra a la clavícula.' },
+                    { type: 'Base', name: 'Remo con Mancuerna', sets: '3 x 10-12', rir: 'RIR 1-2', note: 'Lleva el codo hacia tu cadera.' },
+                    { type: 'Postura', name: 'Facepull en Polea', sets: '3 x 12-15', rir: 'RIR 1', note: 'Clave para una postura bonita.' },
+                    { type: 'Aislamiento', name: 'Curl de Bíceps Mancuernas', sets: '3 x 10-12', rir: 'RIR 0', note: 'Sube controlando, sin balancear.' },
+                    { type: 'Aislamiento', name: 'Curl Martillo Polea', sets: '3 x 10-12', rir: 'RIR 0', note: 'Usa la cuerda.' }
+                ]
+            },
+            {
+                id: 'day3',
+                title: 'Día 3: Quads Completo 🦵🏼',
+                exercises: [
+                    { type: 'Base', name: 'Sentadilla Libre o Hack Squat', sets: '4 x 8-10', rir: 'RIR 1-2', note: 'Baja profundo, mantén el core apretado.' },
+                    { type: 'Base', name: 'Prensa de Piernas', sets: '3 x 10-12', rir: 'RIR 1', note: 'Pies en la parte baja para puro cuádriceps.' },
+                    { type: 'Aislamiento', name: 'Extensión de Cuádriceps', sets: '4 x 12-15', rir: 'RIR 0', note: 'Mantén 1 segundo arriba. Quema mucho.' },
+                    { type: 'Metabólico', name: 'Zancadas Caminando', sets: '3 x 12-15 pasos', rir: 'RIR 1', note: 'Paso normal con mancuernas.' },
+                    { type: 'Aislamiento', name: 'Elevación de Talones', sets: '4 x 15-20', rir: 'RIR 0', note: 'Máximo estiramiento abajo.' }
+                ]
+            },
+            {
+                id: 'day4',
+                title: 'Día 4: Pecho, Hombro & Tríceps ✨',
+                exercises: [
+                    { type: 'Base', name: 'Press Inclinado Mancuernas', sets: '3 x 8-10', rir: 'RIR 1-2', note: 'Tonifica la zona superior (escote).' },
+                    { type: 'Base', name: 'Press de Hombros', sets: '3 x 10-12', rir: 'RIR 1-2', note: 'Baja hasta casi tocar los hombros.' },
+                    { type: 'Aislamiento', name: 'Elevaciones Laterales', sets: '4 x 12-15', rir: 'RIR 0', note: 'Secreto para hombros redonditos.' },
+                    { type: 'Aislamiento', name: 'Extensión Tríceps Polea', sets: '3 x 10-12', rir: 'RIR 0', note: 'Codos pegados al cuerpo.' },
+                    { type: 'Aislamiento', name: 'Tríceps Copa', sets: '3 x 10-12', rir: 'RIR 0', note: 'Siente el estiramiento.' }
+                ]
+            },
+            {
+                id: 'day5',
+                title: 'Día 5: Glúteo Aislado 🍒',
+                exercises: [
+                    { type: 'Aislamiento', name: 'Kickbacks en Polea', sets: '4 x 12-15 c/p', rir: 'RIR 0', note: 'Patada diagonal hacia atrás.' },
+                    { type: 'Metabólico', name: 'Abducciones en Máquina', sets: '4 x 15-20', rir: 'RIR 0', note: 'Drop set en la última serie.' },
+                    { type: 'Base', name: 'Step-Ups (Cajón)', sets: '3 x 10-12 c/p', rir: 'RIR 1', note: 'Controla totalmente la bajada lenta.' },
+                    { type: 'Aislamiento', name: 'Glute Bridge a 1 pierna', sets: '3 x 12-15 c/p', rir: 'RIR 0', note: 'Mancuerna o disco sobre la cadera.' }
+                ]
             }
-            
-            // Agregar event listeners a los botones
-            dayButtons.forEach((button) => {
-                button.addEventListener("click", function () {
-                    const day = this.getAttribute("data-day");
-                    showDay(day);
-                });
+        ];
+
+        let currentData = [];
+        let activeDayId = 'day1';
+
+        function loadData() {
+            try {
+                const saved = localStorage.getItem('routineGirlfriendV2');
+                if (saved) {
+                    currentData = JSON.parse(saved);
+                } else {
+                    currentData = JSON.parse(JSON.stringify(defaultRoutine));
+                }
+            } catch (error) {
+                // Si el iPhone bloquea el localStorage, usa los datos por defecto para que al menos se vea
+                currentData = JSON.parse(JSON.stringify(defaultRoutine));
+            }
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('routineGirlfriendV2', JSON.stringify(currentData));
+            } catch (error) {
+                console.warn("No se pueden guardar los cambios en modo privado.");
+            }
+        }
+
+        function resetRoutine() {
+            if(confirm('¿Segura que quieres borrar tus cambios y reiniciar la rutina?')) {
+                try {
+                    localStorage.removeItem('routineGirlfriendV2');
+                } catch(e) {}
+                loadData();
+                renderTabs();
+                renderRoutine(activeDayId);
+            }
+        }
+
+        function renderTabs() {
+            const tabsContainer = document.getElementById('day-tabs');
+            tabsContainer.innerHTML = '';
+
+            currentData.forEach(day => {
+                const btn = document.createElement('button');
+                const isActive = day.id === activeDayId;
+                
+                btn.className = `px-5 py-2.5 rounded-full font-semibold whitespace-nowrap transition-all duration-300 ${
+                    isActive 
+                    ? 'bg-gradient-to-r from-pink-400 to-rose-400 text-white shadow-md transform scale-105' 
+                    : 'bg-white text-slate-500 hover:bg-pink-50 border border-pink-100'
+                }`;
+                btn.innerText = day.title.split(':')[0]; 
+                btn.onclick = () => {
+                    activeDayId = day.id;
+                    renderTabs();
+                    renderRoutine(activeDayId);
+                };
+                tabsContainer.appendChild(btn);
             });
+        }
+
+        function renderRoutine(dayId) {
+            const container = document.getElementById('routine-container');
+            container.innerHTML = '';
             
-            // Mostrar lunes por defecto
-            showDay("lunes");
+            const dayIndex = currentData.findIndex(d => d.id === dayId);
+            if (dayIndex === -1) return;
+            const dayObj = currentData[dayIndex];
+
+            const dayHeader = document.createElement('h2');
+            dayHeader.className = 'text-2xl font-bold text-slate-700 mb-4 ml-2';
+            dayHeader.innerText = dayObj.title;
+            container.appendChild(dayHeader);
+
+            dayObj.exercises.forEach((ex, exIndex) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-3xl p-5 aesthetic-shadow border border-pink-50 flex flex-col md:flex-row gap-4 items-start md:items-center relative overflow-hidden';
+
+                // Usamos un solo bloque de innerHTML para máxima compatibilidad con Safari iOS
+                card.innerHTML = `
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-pink-300 to-rose-300"></div>
+                    <div class="w-full md:w-1/3 flex-shrink-0 pl-2">
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-pink-100 text-pink-600 mb-2.5 inline-block" 
+                              contenteditable="true" 
+                              onblur="updateField(${dayIndex}, ${exIndex}, 'type', this.innerText)">${ex.type}</span>
+                        <div class="font-bold text-[1.1rem] leading-snug text-slate-800" 
+                             contenteditable="true" 
+                             onblur="updateField(${dayIndex}, ${exIndex}, 'name', this.innerText)">${ex.name}</div>
+                    </div>
+                    
+                    <div class="w-full md:w-auto flex space-x-5 bg-pink-50/50 p-3.5 rounded-2xl flex-shrink-0 border border-pink-100/50">
+                        <div>
+                            <div class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold mb-1">Series x Reps</div>
+                            <div class="text-rose-500 font-bold text-lg" 
+                                 contenteditable="true" 
+                                 onblur="updateField(${dayIndex}, ${exIndex}, 'sets', this.innerText)">${ex.sets}</div>
+                        </div>
+                        <div class="w-px bg-pink-200"></div>
+                        <div>
+                            <div class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold mb-1">Esfuerzo</div>
+                            <div class="font-bold text-slate-700 text-lg" 
+                                 contenteditable="true" 
+                                 onblur="updateField(${dayIndex}, ${exIndex}, 'rir', this.innerText)">${ex.rir}</div>
+                        </div>
+                    </div>
+
+                    <div class="w-full md:flex-grow">
+                        <div class="text-[10px] text-pink-400 uppercase tracking-widest font-semibold mb-1">Nota Aesthetic 📝</div>
+                        <div class="text-sm text-slate-500 font-light leading-relaxed bg-white/50" 
+                             contenteditable="true" 
+                             onblur="updateField(${dayIndex}, ${exIndex}, 'note', this.innerText)">${ex.note}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateField(dayIndex, exIndex, field, newValue) {
+            if (!currentData[dayIndex] || !currentData[dayIndex].exercises[exIndex]) return;
+            currentData[dayIndex].exercises[exIndex][field] = newValue.trim();
+            saveData();
+        }
+
+        // Iniciar la app cuando todo el documento cargue
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderTabs();
+            renderRoutine(activeDayId);
         });
     </script>
 </body>
