@@ -2,21 +2,21 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Aesthetic">
-    <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Pink_heart.svg/512px-Pink_heart.svg.png">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aesthetic Workout Routine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
         :root {
-            --bg-main: #fff0f5; 
-            --text-main: #475569; 
-            --accent-pink: #f472b6; 
+            --bg-main: #fff0f5; /* Rosa pastel muy claro / Lavender blush */
+            --card-bg: #ffffff;
+            --accent-pink: #f472b6; /* Rosa vibrante */
+            --accent-rose: #fb7185;
+            --text-main: #475569; /* Gris pizarra suave */
+            --text-dark: #1e293b;
+            --tag-bg: #fce7f3;
+            --tag-text: #db2777;
         }
         body {
             background-color: var(--bg-main);
@@ -24,12 +24,10 @@
             font-family: 'Poppins', sans-serif;
             background-image: radial-gradient(#fbcfe8 1px, transparent 1px);
             background-size: 20px 20px;
-            overscroll-behavior-y: none;
         }
         [contenteditable="true"] {
             transition: all 0.2s ease;
             border-bottom: 1px dashed transparent;
-            -webkit-tap-highlight-color: transparent;
         }
         [contenteditable="true"]:hover {
             border-bottom: 1px dashed var(--accent-pink);
@@ -48,7 +46,6 @@
         .hide-scroll {
             -ms-overflow-style: none;
             scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
         }
         .aesthetic-shadow {
             box-shadow: 0 10px 25px -5px rgba(244, 114, 182, 0.15), 0 8px 10px -6px rgba(244, 114, 182, 0.1);
@@ -58,16 +55,24 @@
 <body class="min-h-screen p-4 md:p-8">
 
     <div class="max-w-4xl mx-auto">
-        <header class="mb-8 text-center md:text-left bg-white p-6 rounded-3xl aesthetic-shadow border border-pink-50 mt-2">
+        <!-- Encabezado -->
+        <header class="mb-8 text-center md:text-left bg-white p-6 rounded-3xl aesthetic-shadow border border-pink-50">
             <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400 mb-2">My Aesthetic Routine ✨</h1>
-            <p class="text-slate-500 text-sm md:text-base font-light">Lower-body focused split. Toca cualquier texto para editarlo.</p>
+            <p class="text-slate-500 text-sm md:text-base font-light">Lower-body focused split para esculpir y tonificar. Toca cualquier texto para editarlo.</p>
         </header>
 
-        <nav class="flex space-x-3 mb-8 overflow-x-auto hide-scroll pb-4 px-1" id="day-tabs"></nav>
+        <!-- Navegación de Días -->
+        <nav class="flex space-x-3 mb-8 overflow-x-auto hide-scroll pb-4 px-1" id="day-tabs">
+            <!-- Los botones se generarán por JS -->
+        </nav>
 
-        <main id="routine-container" class="space-y-5"></main>
+        <!-- Contenedor de la Rutina -->
+        <main id="routine-container" class="space-y-5">
+            <!-- Las tarjetas de ejercicios se inyectarán aquí -->
+        </main>
 
-        <div class="mt-12 text-center pb-8">
+        <!-- Botón para resetear -->
+        <div class="mt-12 text-center">
             <button onclick="resetRoutine()" class="text-xs text-pink-300 hover:text-pink-500 transition-colors bg-white px-4 py-2 rounded-full shadow-sm border border-pink-100">
                 🤍 Restaurar rutina original
             </button>
@@ -75,16 +80,17 @@
     </div>
 
     <script>
+        // --- 1. DATOS BASE DE LA RUTINA (GIRLFRIEND SPLIT) ---
         const defaultRoutine = [
             {
                 id: 'day1',
                 title: 'Día 1: Glúteo & Femoral 🍑',
                 exercises: [
                     { type: 'Base', name: 'Hip Thrust (Barra o Máquina)', sets: '4 x 8-10', rir: 'RIR 1-2', note: 'Empuja con los talones. Sostén 1 seg arriba.' },
-                    { type: 'Base', name: 'Peso Muerto Rumano', sets: '4 x 8-10', rir: 'RIR 1-2', note: 'Lleva la cadera bien atrás, siente el estiramiento.' },
+                    { type: 'Base', name: 'Peso Muerto Rumano', sets: '4 x 8-10', rir: 'RIR 1-2', note: 'Mancuernas o barra. Lleva la cadera bien atrás, siente el estiramiento.' },
                     { type: 'Aislamiento', name: 'Curl Femoral (Tumbada o Sentada)', sets: '3 x 10-12', rir: 'RIR 0', note: 'Controla la bajada despacio.' },
-                    { type: 'Metabólico', name: 'Sentadilla Búlgara', sets: '3 x 10-12 c/p', rir: 'RIR 1', note: 'Tronco inclinado hacia adelante para enfoque en glúteo.' },
-                    { type: 'Aislamiento', name: 'Hiperextensiones en banco 45°', sets: '3 x 12-15', rir: 'RIR 0', note: 'Espalda encorvada, aprieta el glúteo al subir.' }
+                    { type: 'Metabólico', name: 'Sentadilla Búlgara', sets: '3 x 10-12 c/p', rir: 'RIR 1', note: 'Tronco ligeramente inclinado hacia adelante para mayor enfoque en glúteo.' },
+                    { type: 'Aislamiento', name: 'Hiperextensiones en banco 45°', sets: '3 x 12-15', rir: 'RIR 0', note: 'Espalda encorvada, aprieta el glúteo al subir (no uses la zona lumbar).' }
                 ]
             },
             {
@@ -92,10 +98,10 @@
                 title: 'Día 2: Espalda & Bíceps 🦋',
                 exercises: [
                     { type: 'Base', name: 'Jalón al Pecho', sets: '4 x 8-10', rir: 'RIR 1-2', note: 'Saca pecho al jalar, lleva la barra a la clavícula.' },
-                    { type: 'Base', name: 'Remo con Mancuerna', sets: '3 x 10-12', rir: 'RIR 1-2', note: 'Lleva el codo hacia tu cadera.' },
-                    { type: 'Postura', name: 'Facepull en Polea', sets: '3 x 12-15', rir: 'RIR 1', note: 'Clave para una postura bonita.' },
-                    { type: 'Aislamiento', name: 'Curl de Bíceps Mancuernas', sets: '3 x 10-12', rir: 'RIR 0', note: 'Sube controlando, sin balancear.' },
-                    { type: 'Aislamiento', name: 'Curl Martillo Polea', sets: '3 x 10-12', rir: 'RIR 0', note: 'Usa la cuerda.' }
+                    { type: 'Base', name: 'Remo con Mancuerna a una mano', sets: '3 x 10-12', rir: 'RIR 1-2', note: 'Lleva el codo hacia tu cadera, no hacia el techo.' },
+                    { type: 'Postura', name: 'Facepull en Polea', sets: '3 x 12-15', rir: 'RIR 1', note: 'Clave para una postura bonita y hombros saludables.' },
+                    { type: 'Aislamiento', name: 'Curl de Bíceps con Mancuernas', sets: '3 x 10-12', rir: 'RIR 0', note: 'Sube controlando, sin balancear el cuerpo.' },
+                    { type: 'Aislamiento', name: 'Curl Martillo en Polea', sets: '3 x 10-12', rir: 'RIR 0', note: 'Usa la cuerda para mayor contracción.' }
                 ]
             },
             {
@@ -103,65 +109,56 @@
                 title: 'Día 3: Quads Completo 🦵🏼',
                 exercises: [
                     { type: 'Base', name: 'Sentadilla Libre o Hack Squat', sets: '4 x 8-10', rir: 'RIR 1-2', note: 'Baja profundo, mantén el core apretado.' },
-                    { type: 'Base', name: 'Prensa de Piernas', sets: '3 x 10-12', rir: 'RIR 1', note: 'Pies en la parte baja para puro cuádriceps.' },
-                    { type: 'Aislamiento', name: 'Extensión de Cuádriceps', sets: '4 x 12-15', rir: 'RIR 0', note: 'Mantén 1 segundo arriba. Quema mucho.' },
-                    { type: 'Metabólico', name: 'Zancadas Caminando', sets: '3 x 12-15 pasos', rir: 'RIR 1', note: 'Paso normal con mancuernas.' },
-                    { type: 'Aislamiento', name: 'Elevación de Talones', sets: '4 x 15-20', rir: 'RIR 0', note: 'Máximo estiramiento abajo.' }
+                    { type: 'Base', name: 'Prensa de Piernas', sets: '3 x 10-12', rir: 'RIR 1', note: 'Pies colocados en la parte baja de la plataforma para puro cuádriceps.' },
+                    { type: 'Aislamiento', name: 'Extensión de Cuádriceps', sets: '4 x 12-15', rir: 'RIR 0', note: 'Mantén la contracción 1 segundo arriba. Quema mucho.' },
+                    { type: 'Metabólico', name: 'Zancadas Caminando (Lunges)', sets: '3 x 12-15 pasos', rir: 'RIR 1', note: 'Paso normal (no muy largo) con mancuernas.' },
+                    { type: 'Aislamiento', name: 'Elevación de Talones (Pantorrilla)', sets: '4 x 15-20', rir: 'RIR 0', note: 'Máximo estiramiento abajo.' }
                 ]
             },
             {
                 id: 'day4',
                 title: 'Día 4: Pecho, Hombro & Tríceps ✨',
                 exercises: [
-                    { type: 'Base', name: 'Press Inclinado Mancuernas', sets: '3 x 8-10', rir: 'RIR 1-2', note: 'Tonifica la zona superior (escote).' },
-                    { type: 'Base', name: 'Press de Hombros', sets: '3 x 10-12', rir: 'RIR 1-2', note: 'Baja hasta casi tocar los hombros.' },
-                    { type: 'Aislamiento', name: 'Elevaciones Laterales', sets: '4 x 12-15', rir: 'RIR 0', note: 'Secreto para hombros redonditos.' },
-                    { type: 'Aislamiento', name: 'Extensión Tríceps Polea', sets: '3 x 10-12', rir: 'RIR 0', note: 'Codos pegados al cuerpo.' },
-                    { type: 'Aislamiento', name: 'Tríceps Copa', sets: '3 x 10-12', rir: 'RIR 0', note: 'Siente el estiramiento.' }
+                    { type: 'Base', name: 'Press Inclinado con Mancuernas', sets: '3 x 8-10', rir: 'RIR 1-2', note: 'Tonifica la zona superior del pecho (escote).' },
+                    { type: 'Base', name: 'Press de Hombros (Mancuernas)', sets: '3 x 10-12', rir: 'RIR 1-2', note: 'Baja hasta que las mancuernas toquen casi los hombros.' },
+                    { type: 'Aislamiento', name: 'Elevaciones Laterales', sets: '4 x 12-15', rir: 'RIR 0', note: 'El secreto para el look "aesthetic" de hombros redonditos.' },
+                    { type: 'Aislamiento', name: 'Extensión de Tríceps Polea', sets: '3 x 10-12', rir: 'RIR 0', note: 'Usa barra o cuerda. Codos pegados al cuerpo.' },
+                    { type: 'Aislamiento', name: 'Tríceps Copa a dos manos', sets: '3 x 10-12', rir: 'RIR 0', note: 'Siente el estiramiento en la parte trasera del brazo.' }
                 ]
             },
             {
                 id: 'day5',
                 title: 'Día 5: Glúteo Aislado 🍒',
                 exercises: [
-                    { type: 'Aislamiento', name: 'Kickbacks en Polea', sets: '4 x 12-15 c/p', rir: 'RIR 0', note: 'Patada diagonal hacia atrás.' },
-                    { type: 'Metabólico', name: 'Abducciones en Máquina', sets: '4 x 15-20', rir: 'RIR 0', note: 'Drop set en la última serie.' },
-                    { type: 'Base', name: 'Step-Ups (Cajón)', sets: '3 x 10-12 c/p', rir: 'RIR 1', note: 'Controla totalmente la bajada lenta.' },
-                    { type: 'Aislamiento', name: 'Glute Bridge a 1 pierna', sets: '3 x 12-15 c/p', rir: 'RIR 0', note: 'Mancuerna o disco sobre la cadera.' }
+                    { type: 'Aislamiento', name: 'Kickbacks en Polea', sets: '4 x 12-15 c/p', rir: 'RIR 0', note: 'Patada diagonal hacia atrás. Aprieta el glúteo medio.' },
+                    { type: 'Metabólico', name: 'Abducciones en Máquina', sets: '4 x 15-20', rir: 'RIR 0', note: 'Drop set en la última serie (baja el peso y haz más reps hasta el fallo).' },
+                    { type: 'Base', name: 'Step-Ups (Subidas al cajón)', sets: '3 x 10-12 c/p', rir: 'RIR 1', note: 'Controla totalmente la bajada lenta, no te dejes caer.' },
+                    { type: 'Aislamiento', name: 'Glute Bridge a una pierna', sets: '3 x 12-15 c/p', rir: 'RIR 0', note: 'Usa una mancuerna o disco sobre la cadera.' }
                 ]
             }
         ];
 
+        // --- 2. LÓGICA DE ALMACENAMIENTO Y RENDERIZADO ---
         let currentData = [];
         let activeDayId = 'day1';
 
         function loadData() {
-            try {
-                const saved = localStorage.getItem('routineGirlfriendV2');
-                if (saved) {
-                    currentData = JSON.parse(saved);
-                } else {
-                    currentData = JSON.parse(JSON.stringify(defaultRoutine));
-                }
-            } catch (error) {
-                // Si el iPhone bloquea el localStorage, usa los datos por defecto para que al menos se vea
+            // Usamos una key diferente para que no choque con tu rutina
+            const saved = localStorage.getItem('routineGirlfriendAesthetic');
+            if (saved) {
+                currentData = JSON.parse(saved);
+            } else {
                 currentData = JSON.parse(JSON.stringify(defaultRoutine));
             }
         }
 
         function saveData() {
-            try {
-                localStorage.setItem('routineGirlfriendV2', JSON.stringify(currentData));
-            } catch (error) {
-                console.warn("No se pueden guardar los cambios en modo privado.");
-            }
+            localStorage.setItem('routineGirlfriendAesthetic', JSON.stringify(currentData));
         }
 
         function resetRoutine() {
             if(confirm('¿Segura que quieres borrar tus cambios y reiniciar la rutina?')) {
-                try {
-                    localStorage.removeItem('routineGirlfriendV2');
-                } catch(e) {}
+                localStorage.removeItem('routineGirlfriendAesthetic');
                 loadData();
                 renderTabs();
                 renderRoutine(activeDayId);
@@ -181,7 +178,7 @@
                     ? 'bg-gradient-to-r from-pink-400 to-rose-400 text-white shadow-md transform scale-105' 
                     : 'bg-white text-slate-500 hover:bg-pink-50 border border-pink-100'
                 }`;
-                btn.innerText = day.title.split(':')[0]; 
+                btn.innerText = day.title.split(':')[0]; // Muestra solo "Día 1", "Día 2" en las pestañas
                 btn.onclick = () => {
                     activeDayId = day.id;
                     renderTabs();
@@ -196,9 +193,9 @@
             container.innerHTML = '';
             
             const dayIndex = currentData.findIndex(d => d.id === dayId);
-            if (dayIndex === -1) return;
             const dayObj = currentData[dayIndex];
 
+            // Título principal del día
             const dayHeader = document.createElement('h2');
             dayHeader.className = 'text-2xl font-bold text-slate-700 mb-4 ml-2';
             dayHeader.innerText = dayObj.title;
@@ -208,9 +205,12 @@
                 const card = document.createElement('div');
                 card.className = 'bg-white rounded-3xl p-5 aesthetic-shadow border border-pink-50 flex flex-col md:flex-row gap-4 items-start md:items-center relative overflow-hidden';
 
-                // Usamos un solo bloque de innerHTML para máxima compatibilidad con Safari iOS
-                card.innerHTML = `
-                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-pink-300 to-rose-300"></div>
+                // Borde lateral decorativo
+                const borderLeft = document.createElement('div');
+                borderLeft.className = 'absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-pink-300 to-rose-300';
+                card.appendChild(borderLeft);
+
+                card.innerHTML += `
                     <div class="w-full md:w-1/3 flex-shrink-0 pl-2">
                         <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-pink-100 text-pink-600 mb-2.5 inline-block" 
                               contenteditable="true" 
@@ -248,12 +248,10 @@
         }
 
         function updateField(dayIndex, exIndex, field, newValue) {
-            if (!currentData[dayIndex] || !currentData[dayIndex].exercises[exIndex]) return;
             currentData[dayIndex].exercises[exIndex][field] = newValue.trim();
             saveData();
         }
 
-        // Iniciar la app cuando todo el documento cargue
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
             renderTabs();
